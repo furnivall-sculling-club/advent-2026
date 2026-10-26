@@ -1,5 +1,8 @@
 const calendar = document.querySelector('#calendar');
-const preview = document.querySelector('#preview');
+// Preview is opt-in by URL, keeping the calendar free of controls.
+const preview = { checked: new URLSearchParams(location.search).get('preview') === '1' };
+const doorOrder = [7, 18, 3, 22, 11, 1, 14, 5, 24, 9, 16, 20, 2, 13, 8, 19, 4, 23, 17, 6, 21, 10, 15, 12];
+const doorColours = ["myrtle", "mauve", "myrtle", "slate", "gold", "blue", "mauve", "myrtle", "slate", "rose", "slate", "mauve", "gold", "blue", "rose", "slate", "myrtle", "gold", "blue", "mauve", "blue", "rose", "gold", "rose"];
 const modal = document.querySelector('#door-dialog');
 const icons = [
   '<path d="M20 2 10 13h6L7 23h26L24 13h6Z M20 23v6"/>',
@@ -27,7 +30,6 @@ function readProgress() {
   previewOpened = readSet(progressKey(true));
 }
 readProgress();
-try { preview.checked = localStorage.getItem('oars-advent-preview-enabled') === 'true'; } catch {}
 function available(day, date = new Date()) {
   return date.getMonth() === 11 && date.getDate() >= day;
 }
@@ -43,30 +45,26 @@ function toast(message) {
   clearTimeout(toast.timer);
   toast.timer = setTimeout(() => el.classList.remove('visible'), 3500);
 }
-function updateCount() {
-  document.querySelector('#count').textContent = `${(preview.checked ? previewOpened : opened).size} / 24`;
-}
+
 function render() {
   const now = new Date();
   if (now.getFullYear() !== currentYear) { currentYear = now.getFullYear(); readProgress(); }
   const progress = preview.checked ? previewOpened : opened;
   calendar.replaceChildren();
-  for (let day = 1; day <= 24; day++) {
+  for (const day of doorOrder) {
     const unlocked = preview.checked || available(day, now);
     const seen = progress.has(day);
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'door' + (seen ? ' viewed' : '') + (!preview.checked && now.getMonth() === 11 && now.getDate() === day ? ' today' : '');
     button.dataset.day = day;
+    button.dataset.colour = doorColours[doorOrder.indexOf(day)];
     button.setAttribute('aria-label', `December ${day}, ${seen ? 'opened' : unlocked ? 'ready to open' : 'locked until December ' + day}`);
     button.setAttribute('aria-disabled', String(!unlocked));
-    button.innerHTML = `<span class="door-face">${seen ? '<span class="opened-mark" aria-hidden="true">✓</span>' : ''}<span class="door-art" aria-hidden="true"><svg viewBox="0 0 40 30">${icons[(day - 1) % 6]}</svg></span><span class="number">${day.toString().padStart(2, '0')}</span><span class="door-label">${seen ? 'OPENED' : day === 24 ? 'CHRISTMAS EVE' : 'DECEMBER'}</span></span>`;
+    button.innerHTML = `<span class="door-face">${seen ? '<span class="opened-mark" aria-hidden="true">✓</span>' : ''}<span class="door-art" aria-hidden="true"><svg viewBox="0 0 40 30">${icons[(day - 1) % 6]}</svg></span><span class="number">${day.toString().padStart(2, '0')}</span></span>`;
     button.addEventListener('click', () => openDoor(day, button));
     calendar.append(button);
   }
-  updateCount();
-  document.querySelector('#preview-note').hidden = !preview.checked;
-  document.querySelector('#season-status').textContent = preview.checked ? 'A sneak peek at the Christmas magic.' : now.getMonth() === 11 ? (now.getDate() <= 24 ? `It’s ${now.getDate()} December. Your next surprise awaits.` : 'Merry Christmas, crew! All 24 doors are ready.') : 'The countdown begins on 1 December.';
 }
 function openDoor(day, button) {
   if (modal.open || closing) return;
@@ -83,7 +81,6 @@ function openDoor(day, button) {
   try { const url = new URL(content.link); if (url.protocol === 'https:') { link.href = url.href; link.hidden = false; } } catch {}
   (preview.checked ? previewOpened : opened).add(day);
   save();
-  updateCount();
   // Both animations begin in the same frame; no timeout between door and message.
   modal.style.setProperty('--from-x', `${origin.left + origin.width / 2 - innerWidth / 2}px`);
   modal.style.setProperty('--from-y', `${origin.top + origin.height / 2 - innerHeight / 2}px`);
@@ -116,18 +113,6 @@ for (const dialog of document.querySelectorAll('dialog')) {
   });
 }
 document.querySelector('#back').onclick = closeDoor;
-document.querySelector('#about').onclick = () => document.querySelector('#info-dialog').showModal();
-document.querySelector('#got-it').onclick = () => document.querySelector('#info-dialog').close();
-preview.onchange = () => {
-  try { localStorage.setItem('oars-advent-preview-enabled', String(preview.checked)); } catch {}
-  render();
-};
-document.querySelector('#reset').onclick = () => {
-  if (confirm(`Reset your ${preview.checked ? 'preview' : 'December'} opened-door progress on this device?`)) {
-    (preview.checked ? previewOpened : opened).clear();
-    save(); render(); toast('Your calendar is ready for a fresh start.');
-  }
-};
 window.addEventListener('storage', event => {
   if (event.key === null || event.key === progressKey(false) || event.key === progressKey(true)) {
     readProgress(); if (!modal.open) render();
@@ -136,6 +121,6 @@ window.addEventListener('storage', event => {
 let renderedDate = new Date().toDateString();
 setInterval(() => {
   const date = new Date().toDateString();
-  if (date !== renderedDate && !modal.open && !document.querySelector('#info-dialog').open) { renderedDate = date; render(); }
+  if (date !== renderedDate && !modal.open) { renderedDate = date; render(); }
 }, 10000);
 render();
