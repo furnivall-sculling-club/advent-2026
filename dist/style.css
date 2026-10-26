@@ -46,3 +46,18 @@ body{background:radial-gradient(ellipse at 7% 43%,#b8c3d51c,transparent 45%),rad
 .door.viewed .door-face{box-shadow:3px 1px 8px #0003,inset 0 0 0 1px #c5ad7666}
 @media(max-width:750px){.winter-header{height:240px}.winter-header img{width:125%;max-width:none;margin-left:-12.5%;object-position:50% 55%}main{padding-top:10px}}
 @media(max-width:460px){.winter-header{height:210px}.winter-header img{width:155%;margin-left:-27.5%;object-position:50% 53%}main{padding-top:10px;padding-bottom:30px}}
+
+/* Club-kit reference: deep myrtle with a narrow gold centre stripe. */
+:root{--club-myrtle:#003b28;--club-gold:#f5c526;--myrtle:#003b28}
+body{background:radial-gradient(ellipse at 5% 63%,#adc4b833,transparent 60%),radial-gradient(ellipse at 96% 75%,#d2ba7c18,transparent 50%),var(--paper)}
+.door[data-colour="myrtle"]{--face:#003724;--face-light:#124d35;--foil:#ecdbad}
+.door[data-colour="slate"]{--face:#245543;--face-light:#42725c;--foil:#f1e5c8}
+.door[data-colour="blue"]{--face:#afc5b9;--face-light:#d1dfd5;--foil:#214b37}
+.ribbon{position:absolute;pointer-events:none;z-index:1;width:15px;height:100%;left:11px;top:0;background:linear-gradient(90deg,var(--club-myrtle) 0 37%,var(--club-gold) 37% 63%,var(--club-myrtle) 63% 100%);box-shadow:1px 0 3px #0003;border-left:1px solid #ffffff25;border-right:1px solid #ffffff25}
+.door[data-ribbon="right"] .ribbon{left:auto;right:11px}
+.door[data-ribbon="top"] .ribbon,.door[data-ribbon="bottom"] .ribbon{width:100%;height:13px;left:0;top:10px;background:linear-gradient(0deg,var(--club-myrtle) 0 37%,var(--club-gold) 37% 63%,var(--club-myrtle) 63% 100%);border:0;box-shadow:0 1px 3px #0003}
+.door[data-ribbon="bottom"] .ribbon{top:auto;bottom:10px}
+.door[data-ribbon="corner-left"] .ribbon,.door[data-ribbon="corner-right"] .ribbon{width:90px;height:14px;top:13px;left:-25px;transform:rotate(-45deg);background:linear-gradient(0deg,var(--club-myrtle) 0 37%,var(--club-gold) 37% 63%,var(--club-myrtle) 63% 100%);border:0;box-shadow:0 1px 3px #0003}
+.door[data-ribbon="corner-right"] .ribbon{left:auto;right:-25px;transform:rotate(45deg)}
+.number,.door-art{position:relative;z-index:2}.opened-mark{z-index:3}.door-face:before{z-index:2}
+@media(max-width:460px){.ribbon{width:10px;left:8px}.door[data-ribbon="right"] .ribbon{right:8px}.door[data-ribbon="top"] .ribbon,.door[data-ribbon="bottom"] .ribbon{height:9px}.door[data-ribbon="top"] .ribbon{top:8px}.door[data-ribbon="bottom"] .ribbon{bottom:8px}.door[data-ribbon="corner-left"] .ribbon,.door[data-ribbon="corner-right"] .ribbon{height:10px;top:11px}}

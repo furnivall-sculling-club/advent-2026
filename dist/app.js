@@ -1,8 +1,11 @@
 const calendar = document.querySelector('#calendar');
-// Preview is opt-in by URL, keeping the calendar free of controls.
-const preview = { checked: new URLSearchParams(location.search).get('preview') === '1' };
+// Temporary testing default. Set PREVIEW_DEFAULT to false before December.
+const PREVIEW_DEFAULT = true;
+const previewParameter = new URLSearchParams(location.search).get('preview');
+const preview = { checked: previewParameter === null ? PREVIEW_DEFAULT : previewParameter === '1' };
 const doorOrder = [7, 18, 3, 22, 11, 1, 14, 5, 24, 9, 16, 20, 2, 13, 8, 19, 4, 23, 17, 6, 21, 10, 15, 12];
 const doorColours = ["myrtle", "mauve", "myrtle", "slate", "gold", "blue", "mauve", "myrtle", "slate", "rose", "slate", "mauve", "gold", "blue", "rose", "slate", "myrtle", "gold", "blue", "mauve", "blue", "rose", "gold", "rose"];
+const doorRibbons = ['bottom', 'corner-right', 'corner-left', 'corner-left', 'right', 'corner-right', 'left', 'left', 'top', 'left', 'top', 'left', 'top', 'bottom', 'corner-right', 'right', 'right', 'corner-left', 'right', 'bottom', 'corner-right', 'corner-left', 'top', 'bottom'];
 const modal = document.querySelector('#door-dialog');
 const icons = [
   '<path d="M20 2 10 13h6L7 23h26L24 13h6Z M20 23v6"/>',
@@ -59,9 +62,10 @@ function render() {
     button.className = 'door' + (seen ? ' viewed' : '') + (!preview.checked && now.getMonth() === 11 && now.getDate() === day ? ' today' : '');
     button.dataset.day = day;
     button.dataset.colour = doorColours[doorOrder.indexOf(day)];
+    button.dataset.ribbon = doorRibbons[doorOrder.indexOf(day)];
     button.setAttribute('aria-label', `December ${day}, ${seen ? 'opened' : unlocked ? 'ready to open' : 'locked until December ' + day}`);
     button.setAttribute('aria-disabled', String(!unlocked));
-    button.innerHTML = `<span class="door-face">${seen ? '<span class="opened-mark" aria-hidden="true">✓</span>' : ''}<span class="door-art" aria-hidden="true"><svg viewBox="0 0 40 30">${icons[(day - 1) % 6]}</svg></span><span class="number">${day.toString().padStart(2, '0')}</span></span>`;
+    button.innerHTML = `<span class="door-face"><span class="ribbon" aria-hidden="true"></span>${seen ? '<span class="opened-mark" aria-hidden="true">✓</span>' : ''}<span class="door-art" aria-hidden="true"><svg viewBox="0 0 40 30">${icons[(day - 1) % 6]}</svg></span><span class="number">${day.toString().padStart(2, '0')}</span></span>`;
     button.addEventListener('click', () => openDoor(day, button));
     calendar.append(button);
   }
