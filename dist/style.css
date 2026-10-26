@@ -61,3 +61,10 @@ body{background:radial-gradient(ellipse at 5% 63%,#adc4b833,transparent 60%),rad
 .door[data-ribbon="corner-right"] .ribbon{left:auto;right:-25px;transform:rotate(45deg)}
 .number,.door-art{position:relative;z-index:2}.opened-mark{z-index:3}.door-face:before{z-index:2}
 @media(max-width:460px){.ribbon{width:10px;left:8px}.door[data-ribbon="right"] .ribbon{right:8px}.door[data-ribbon="top"] .ribbon,.door[data-ribbon="bottom"] .ribbon{height:9px}.door[data-ribbon="top"] .ribbon{top:8px}.door[data-ribbon="bottom"] .ribbon{bottom:8px}.door[data-ribbon="corner-left"] .ribbon,.door[data-ribbon="corner-right"] .ribbon{height:10px;top:11px}}
+
+/* Feather the image itself and blur the last strip into the paper background. */
+.winter-header img{mask-image:linear-gradient(to bottom,#000 0%,#000 65%,#000b 80%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 65%,#000b 80%,transparent 100%)}
+.winter-header:before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(to bottom,#faf8f2e8, #faf8f29c 20%,transparent 48%)}
+.winter-header:after{inset:auto 0 0;height:30%;background:linear-gradient(to bottom,transparent,var(--paper));backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);mask-image:linear-gradient(transparent,#000);-webkit-mask-image:linear-gradient(transparent,#000)}
+.calendar-title{position:absolute;z-index:2;top:clamp(18px,3vw,42px);left:50%;transform:translateX(-50%);width:calc(100% - 48px);max-width:1000px;margin:0;text-align:center;font-family:'Libre Caslon Display',Georgia,serif;font-size:clamp(27px,3.5vw,46px);font-weight:400;line-height:1.13;color:#003b28;text-wrap:balance;text-shadow:0 1px 10px #faf8f2,0 0 24px #faf8f2}
+@media(max-width:460px){.calendar-title{width:calc(100% - 30px);top:16px;font-size:27px;line-height:1.07}.winter-header:before{background:linear-gradient(#faf8f2f0,#faf8f2b3 38%,transparent 76%)}dialog h2{font-size:36px}}

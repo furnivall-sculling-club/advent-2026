@@ -75,14 +75,8 @@ function openDoor(day, button) {
   if (!preview.checked && !available(day)) { toast(`A little patience, crew. This door opens on ${day} December.`); return; }
   activeDoor = day;
   const origin = button.getBoundingClientRect();
-  const content = window.ADVENT_CONTENT.find(item => item.day === day) || { title: 'Coming soon', body: 'Your coach’s surprise will be here soon.' };
-  document.querySelector('#modal-day').textContent = `DECEMBER ${day} · ${preview.checked ? 'PREVIEW' : 'FOR THE CREW'}`;
+  const content = window.ADVENT_CONTENT.find(item => item.day === day) || { title: 'Placeholder: 3x30 UT2' };
   document.querySelector('#modal-title').textContent = content.title;
-  document.querySelector('#modal-body').textContent = content.body;
-  const link = document.querySelector('#modal-link');
-  link.hidden = true;
-  link.removeAttribute('href');
-  try { const url = new URL(content.link); if (url.protocol === 'https:') { link.href = url.href; link.hidden = false; } } catch {}
   (preview.checked ? previewOpened : opened).add(day);
   save();
   // Both animations begin in the same frame; no timeout between door and message.
